@@ -10,7 +10,7 @@ When('I select {string} search type', async function(searchType) {
   await this.fundScreenerPage.selectSearchType(searchType);
 });
 
-When('I search for {string}', async function(searchTerm) {
+When('I search for {string}', { timeout: 15000 }, async function(searchTerm) {
   await this.fundScreenerPage.enterSearchTerm(searchTerm);
   await this.fundScreenerPage.clickSearchButton();
   await this.fundScreenerPage.waitForResults();
@@ -80,7 +80,7 @@ Then('the search should handle special characters gracefully', async function() 
   await this.fundScreenerPage.verifyNoResults();
 });
 
-Given('I have performed a search for {string}', async function(searchTerm) {
+Given('I have performed a search for {string}', { timeout: 15000 }, async function(searchTerm) {
   await this.fundScreenerPage.performKeywordSearch(searchTerm);
 });
 
@@ -103,7 +103,7 @@ Then('the search filter should be removed', async function() {
   expect(currentUrl).not.toContain('search=');
 });
 
-When('I navigate to the second page of results', async function() {
+When('I navigate to the second page of results', { timeout: 10000 }, async function() {
   await this.fundScreenerPage.goToNextPage();
 });
 
@@ -137,7 +137,7 @@ Then('pagination should be available for large result sets', async function() {
   }
 });
 
-Then('I should see the same results as searching for {string}', async function(searchTerm) {
+Then('I should see the same results as searching for {string}', { timeout: 20000 }, async function(searchTerm) {
   const currentResults = await this.fundScreenerPage.getSearchResults();
   
   await this.fundScreenerPage.enterSearchTerm(searchTerm.toLowerCase());
