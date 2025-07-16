@@ -22,9 +22,9 @@ Feature: Fund Search Functionality
 
   Scenario: Search for funds using exposure search
     When I select "exposure" search type
-    And I search for "S&P 500"
-    Then I should see funds with S&P 500 exposure
-    And the results should contain relevant index funds
+    And I search for "Apple"
+    Then I should see funds with Apple exposure
+    And the results should contain relevant equity funds
 
   Scenario: Search with no results
     When I select "keyword" search type

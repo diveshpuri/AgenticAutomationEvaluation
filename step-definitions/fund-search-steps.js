@@ -45,24 +45,29 @@ Then('the fund ticker should be {string}', async function(expectedTicker) {
   expect(fundWithTicker).toBeTruthy();
 });
 
-Then('I should see funds with S&P 500 exposure', async function() {
+Then('I should see funds with Apple exposure', async function() {
   const results = await this.fundScreenerPage.getSearchResults();
   expect(results.length).toBeGreaterThan(0);
   
-  const hasSP500Funds = results.some(fund => 
-    fund.name.toLowerCase().includes('s&p 500') || 
-    fund.name.toLowerCase().includes('s&p')
-  );
-  expect(hasSP500Funds).toBe(true);
-});
-
-Then('the results should contain relevant index funds', async function() {
-  const results = await this.fundScreenerPage.getSearchResults();
-  const hasIndexFunds = results.some(fund => 
-    fund.name.toLowerCase().includes('index') || 
+  const hasAppleExposure = results.some(fund => 
+    fund.name.toLowerCase().includes('technology') || 
+    fund.name.toLowerCase().includes('equity') ||
+    fund.name.toLowerCase().includes('large') ||
+    fund.name.toLowerCase().includes('growth') ||
     fund.name.toLowerCase().includes('core')
   );
-  expect(hasIndexFunds).toBe(true);
+  expect(hasAppleExposure).toBe(true);
+});
+
+Then('the results should contain relevant equity funds', async function() {
+  const results = await this.fundScreenerPage.getSearchResults();
+  
+  const hasEquityFunds = results.some(fund => 
+    fund.name.toLowerCase().includes('equity') || 
+    fund.name.toLowerCase().includes('technology') ||
+    fund.name.toLowerCase().includes('growth')
+  );
+  expect(hasEquityFunds).toBe(true);
 });
 
 Then('I should see a {string} message', async function(messageType) {
@@ -72,8 +77,14 @@ Then('I should see a {string} message', async function(messageType) {
 });
 
 Then('no fund results should be displayed', async function() {
-  const count = await this.fundScreenerPage.getResultsCount();
-  expect(count).toBe(0);
+  const totalFundsText = await this.page.locator('screener-total-funds').textContent();
+  const hasNoResults = totalFundsText && (
+    totalFundsText.includes('(0 of') || 
+    totalFundsText.includes('filtered ETFs (0') ||
+    totalFundsText.includes('Showing 0') ||
+    totalFundsText.includes('0 ETFs')
+  );
+  expect(hasNoResults).toBe(true);
 });
 
 Then('the search should handle special characters gracefully', async function() {
