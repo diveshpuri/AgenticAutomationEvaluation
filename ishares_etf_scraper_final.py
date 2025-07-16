@@ -54,18 +54,22 @@ async def scrape_ishares_etfs():
                 fund_name = lines[0].strip() if lines else "N/A"
                 symbol = lines[-1].strip() if len(lines) > 1 else "N/A"
                 
-                row_text = await row.inner_text()
-                row_parts = row_text.split('\t')  # Split by tabs to get column data
+                table_cells = await row.query_selector_all('td')
                 
                 net_assets = "N/A"
                 ytd_return = "N/A"
                 
-                for part in row_parts:
-                    part = part.strip()
-                    if part.endswith('M') and ',' in part:
-                        net_assets = part
-                    elif '%' in part and len(part) < 10 and not part.startswith('0.'):
-                        ytd_return = part
+                if len(table_cells) > 3:
+                    net_assets_element = table_cells[3]
+                    net_assets_text = await net_assets_element.inner_text()
+                    if net_assets_text and net_assets_text.strip():
+                        net_assets = net_assets_text.strip()
+                
+                if len(table_cells) > 6:
+                    ytd_element = table_cells[6]
+                    ytd_text = await ytd_element.inner_text()
+                    if ytd_text and ytd_text.strip() and '%' in ytd_text:
+                        ytd_return = ytd_text.strip()
                 
                 if fund_url:
                     fund_page = await context.new_page()
@@ -79,19 +83,72 @@ async def scrape_ishares_etfs():
                         nav_change = "N/A"
                         expense_ratio = "N/A"
                         
-                        page_content = await fund_page.content()
+                        nav_selectors = [
+                            '[data-module-name="HeaderPrice"] .header-price',
+                            '.header-price',
+                            '[class*="price"]',
+                            '[class*="nav"]'
+                        ]
                         
-                        nav_match = re.search(r'\$(\d{1,4}(?:,\d{3})*\.\d{2})', page_content)
-                        if nav_match:
-                            nav = f"${nav_match.group(1)}"
+                        for selector in nav_selectors:
+                            nav_element = await fund_page.query_selector(selector)
+                            if nav_element:
+                                nav_text = await nav_element.inner_text()
+                                if '$' in nav_text and '.' in nav_text:
+                                    nav = nav_text.strip()
+                                    break
                         
-                        change_match = re.search(r'(-?\d+\.\d+)\s*\((-?\d+\.\d+%)\)', page_content)
-                        if change_match:
-                            nav_change = f"{change_match.group(1)} ({change_match.group(2)})"
+                        change_selectors = [
+                            '[data-module-name="HeaderPrice"] .header-change',
+                            '.header-change',
+                            '[class*="change"]',
+                            '[class*="delta"]'
+                        ]
                         
-                        expense_match = re.search(r'Expense Ratio:\s*(\d+\.\d+%)', page_content)
-                        if expense_match:
-                            expense_ratio = expense_match.group(1)
+                        for selector in change_selectors:
+                            change_element = await fund_page.query_selector(selector)
+                            if change_element:
+                                change_text = await change_element.inner_text()
+                                if '(' in change_text and '%' in change_text:
+                                    nav_change = change_text.strip()
+                                    break
+                        
+                        expense_selectors = [
+                            '[data-module-name="KeyFacts"] td',
+                            'table td',
+                            '[class*="expense"]',
+                            '[class*="ratio"]'
+                        ]
+                        
+                        for selector in expense_selectors:
+                            expense_elements = await fund_page.query_selector_all(selector)
+                            for element in expense_elements:
+                                expense_text = await element.inner_text()
+                                if '%' in expense_text and len(expense_text) < 10:
+                                    text_clean = expense_text.strip().replace('.', '').replace('%', '')
+                                    if text_clean.replace('0', '').isdigit() and '.' in expense_text:
+                                        expense_ratio = expense_text.strip()
+                                        break
+                            if expense_ratio != "N/A":
+                                break
+                        
+                        if nav == "N/A" or nav_change == "N/A" or expense_ratio == "N/A":
+                            page_content = await fund_page.content()
+                            
+                            if nav == "N/A":
+                                nav_match = re.search(r'\$(\d{1,4}(?:,\d{3})*\.\d{2})', page_content)
+                                if nav_match:
+                                    nav = f"${nav_match.group(1)}"
+                            
+                            if nav_change == "N/A":
+                                change_match = re.search(r'(-?\d+\.\d+)\s*\((-?\d+\.\d+%)\)', page_content)
+                                if change_match:
+                                    nav_change = f"{change_match.group(1)} ({change_match.group(2)})"
+                            
+                            if expense_ratio == "N/A":
+                                expense_match = re.search(r'Expense Ratio:\s*(\d+\.\d+%)', page_content)
+                                if expense_match:
+                                    expense_ratio = expense_match.group(1)
                         
                         etf_data = {
                             'rank': i + 1,
