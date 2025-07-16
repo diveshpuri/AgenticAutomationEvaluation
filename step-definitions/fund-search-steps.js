@@ -151,8 +151,14 @@ Then('the search results should load within {int} seconds', { timeout: 15000 }, 
 Then('pagination should be available for large result sets', async function() {
   const count = await this.fundScreenerPage.getResultsCount();
   if (count >= 25) {
-    const nextButton = await this.page.locator('button:has-text("Next")').isVisible();
-    expect(nextButton).toBe(true);
+    const currentUrl = this.page.url();
+    const hasPageNumber = currentUrl.includes('pageNumber=1');
+    expect(hasPageNumber).toBe(true);
+    
+    await this.fundScreenerPage.goToNextPage();
+    const newUrl = this.page.url();
+    const isOnPage2 = newUrl.includes('pageNumber=2');
+    expect(isOnPage2).toBe(true);
   }
 });
 
