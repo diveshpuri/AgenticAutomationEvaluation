@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-07-16T15:01:41.809400",
+  "description": "Top 3 iShares ETFs by Net Assets Under Management",
+  "source": "https://www.ishares.com/us/products/etf-investments",
+  "top_etfs": [
+    {
+      "rank": 1,
+      "fund_name": "iShares Core S&P 500 ETF",
+      "symbol": "IVV",
+      "nav": "$625.28",
+      "nav_change": "-2.43 (-0.39%)",
+      "ytd_return": "N/A",
+      "net_assets": "629,406M",
+      "expense_ratio": "0.03%",
+      "url": "https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf"
+    },
+    {
+      "rank": 2,
+      "fund_name": "iShares Core MSCI EAFE ETF",
+      "symbol": "IEFA",
+      "nav": "$82.00",
+      "nav_change": "-0.89 (-1.07%)",
+      "ytd_return": "N/A",
+      "net_assets": "141,012M",
+      "expense_ratio": "0.07%",
+      "url": "https://www.ishares.com/us/products/244049/ishares-core-msci-eafe-etf"
+    },
+    {
+      "rank": 3,
+      "fund_name": "iShares Core U.S. Aggregate Bond ETF",
+      "symbol": "AGG",
+      "nav": "$97.76",
+      "nav_change": "-0.28 (-0.28%)",
+      "ytd_return": "N/A",
+      "net_assets": "127,528M",
+      "expense_ratio": "0.03%",
+      "url": "https://www.ishares.com/us/products/239458/ishares-core-total-us-bond-market-etf"
+    }
+  ]
+}
