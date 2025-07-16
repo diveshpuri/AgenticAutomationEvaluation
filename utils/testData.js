@@ -55,8 +55,16 @@ const testData = {
 
   urls: {
     base: 'https://www.ishares.com/us',
+    homepage: 'https://www.ishares.com/us',
     fundScreener: 'https://www.ishares.com/us/products/etf-investments#/?productView=etf&pageNumber=1&sortColumn=totalNetAssets&sortDirection=desc&dataView=keyFacts',
-    comparison: 'https://www.ishares.com/us/products/fund-comparison'
+    comparison: 'https://www.ishares.com/us/products/fund-comparison',
+    tools: 'https://www.ishares.com/us/resources/tools',
+    coreBuilder: 'https://www.ishares.com/us/core-builder',
+    etfComparison: 'https://www.ishares.com/us/products/fund-comparison',
+    investmentDiscovery: 'https://www.ishares.com/us/products/etf-investments',
+    reportGenerator: 'https://www.ishares.com/us/tools/report-generator',
+    advisorTools: 'https://www.ishares.com/us/financial-professionals',
+    institutionalTools: 'https://www.ishares.com/us/institutional'
   },
 
   timeouts: {

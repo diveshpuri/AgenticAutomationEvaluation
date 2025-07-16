@@ -5,7 +5,9 @@ class Selectors {
       ourFundsMenu: 'ds-primary-nav nav ul li:has-text("Our Funds")',
       searchButton: 'ds-primary-nav [data-testid="search-button"], ds-primary-nav button[aria-label*="Search"]',
       searchInput: 'ds-primary-nav input[type="search"], ds-primary-nav input[placeholder*="Search"]',
-      logo: 'ds-primary-nav a[href*="ishares"]'
+      logo: 'ds-primary-nav a[href*="ishares"]',
+      resourcesMenu: 'a:has-text("Resources"), button:has-text("Resources")',
+      toolsMenuItem: 'a:has-text("Tools")'
     };
   }
 
@@ -104,6 +106,48 @@ class Selectors {
 
   static getFlexibleSelector(...selectors) {
     return selectors.join(', ');
+  }
+
+  static get tools() {
+    return {
+      container: '.tools-container, [data-module="tools"]',
+      heading: 'h1:has-text("TOOLS FOR INVESTORS")',
+      investorTabs: {
+        individualinvestors: 'button:has-text("INDIVIDUAL INVESTORS"), a:has-text("INDIVIDUAL INVESTORS")',
+        financialadvisors: 'button:has-text("FINANCIAL ADVISORS"), a:has-text("FINANCIAL ADVISORS")',
+        institutionalinvestors: 'button:has-text("INSTITUTIONAL INVESTORS"), a:has-text("INSTITUTIONAL INVESTORS")'
+      },
+      sections: {
+        buildPortfolio: 'h2:has-text("BUILD A DIVERSIFIED PORTFOLIO")',
+        discoverCompare: 'h2:has-text("DISCOVER & COMPARE")',
+        seekBetterOutcomes: 'h2:has-text("SEEK BETTER OUTCOMES FOR CLIENTS & PROSPECTS")',
+        analyticsTools: 'h2:has-text("Analytics to Help Simplify Investing")',
+        moreWaysToTrack: 'h2:has-text("MORE WAYS TO TRACK & COMPARE")'
+      },
+      toolLinks: {
+        coreBuilder: 'a:has-text("Core Builder"), button:has-text("Core Builder")',
+        etfSearch: 'a:has-text("View our full list of products")',
+        investmentGoals: 'a:has-text("Explore by goals")',
+        compareETFs: 'a:has-text("Compare iShares ETFs")',
+        discoverByHoldings: 'a:has-text("Discover by holdings")',
+        reportGenerator: 'a:has-text("Report Generator Tool")',
+        morningstarComparison: 'a:has-text("Morningstar Multi Fund Comparison Tool")',
+        taxOptimization: 'a:has-text("Optimize for tax-efficiency")',
+        advisorCenter: 'a:has-text("Advanced Tools at Advisor Center")',
+        institutionalAnalytics: 'a:has-text("Analytics to Help Simplify Investing")',
+        accessInstitutionalTools: 'a:has-text("ACCESS OUR INSTITUTIONAL TOOLS")'
+      }
+    };
+  }
+
+  static get coreBuilder() {
+    return {
+      container: '.core-builder-container, [data-module="core-builder"]',
+      portfolioOptions: '.portfolio-options, .allocation-options',
+      riskTolerance: '.risk-tolerance, select[name="risk"]',
+      investmentTimeline: '.investment-timeline, select[name="timeline"]',
+      recommendations: '.recommendations, .portfolio-recommendations'
+    };
   }
 }
 

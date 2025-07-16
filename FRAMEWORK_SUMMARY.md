@@ -4,9 +4,10 @@
 This comprehensive regression testing framework provides complete test coverage for ishares.com/us fund screener functionality using Cucumber.js + Playwright with human-centric test scenarios and robust shadowRoot handling.
 
 ## ✅ Test Results Summary
-**All 10 scenarios passing with 49 steps completed successfully**
+**Fund Search: All 10 scenarios passing with 49 steps completed successfully**
+**Tools Section: 50+ new scenarios added covering all investor types**
 
-### Scenarios Covered:
+### Fund Search Scenarios Covered:
 1. **Keyword Search** - Basic fund search by keywords
 2. **Ticker Symbol Search** - Search by specific fund tickers  
 3. **Exposure Search** - Complex search by holdings/sectors/geography (Apple exposure)
@@ -17,6 +18,15 @@ This comprehensive regression testing framework provides complete test coverage 
 8. **Search Performance** - Performance testing with large result sets
 9. **Case Insensitive Search** - Ensuring search works regardless of case
 10. **Partial Word Search** - Supporting partial term matching
+
+### Tools Section Scenarios Added:
+11. **Tools Navigation** - Navigation across Individual, Financial Advisor, and Institutional investor tabs
+12. **Core Builder Tool** - Portfolio construction and diversification guidance
+13. **ETF Comparison Tools** - Side-by-side fund comparison and Morningstar integration
+14. **Investment Discovery Tools** - Goal-based and holdings-based fund discovery
+15. **Report Generator Tool** - Custom report building with fund and index data
+16. **Advisor Tools** - Tax-efficiency optimization and correlation analysis
+17. **Institutional Tools** - Trade cost analysis, liquidity metrics, and professional analytics
 
 ## 🔧 Technical Achievements
 
@@ -48,17 +58,38 @@ ishares-regression-testing/
 │   ├── fund-details.feature    # Individual fund details
 │   ├── navigation.feature      # Site navigation
 │   ├── data-management.feature # Data views and pagination
-│   └── download-functionality.feature # Export capabilities
+│   ├── download-functionality.feature # Export capabilities
+│   ├── tools-navigation.feature # Tools section navigation (✅ New)
+│   ├── core-builder-tool.feature # Core Builder functionality (✅ New)
+│   ├── etf-comparison-tools.feature # ETF comparison tools (✅ New)
+│   ├── investment-discovery-tools.feature # Investment discovery (✅ New)
+│   ├── reporting-tools.feature # Report Generator tool (✅ New)
+│   ├── advisor-tools.feature   # Financial advisor tools (✅ New)
+│   └── institutional-tools.feature # Institutional tools (✅ New)
 ├── step-definitions/           # Cucumber step implementations
 │   ├── fund-search-steps.js   # ✅ Fully implemented and tested
+│   ├── tools-navigation-steps.js # ✅ Tools navigation steps
+│   ├── core-builder-steps.js  # ✅ Core Builder tool steps
+│   ├── etf-comparison-tools-steps.js # ✅ Comparison tools steps
+│   ├── investment-discovery-steps.js # ✅ Discovery tools steps
+│   ├── reporting-tools-steps.js # ✅ Reporting tool steps
+│   ├── advisor-tools-steps.js  # ✅ Advisor tools steps
+│   ├── institutional-tools-steps.js # ✅ Institutional tools steps
 │   └── [other step files]     # Framework for additional scenarios
 ├── page-objects/              # Page Object Model classes
 │   ├── FundScreenerPage.js    # ✅ Comprehensive implementation
+│   ├── ToolsPage.js           # ✅ Tools section navigation
+│   ├── CoreBuilderPage.js     # ✅ Core Builder tool
+│   ├── ETFComparisonPage.js   # ✅ ETF comparison tools
+│   ├── InvestmentDiscoveryPage.js # ✅ Investment discovery tools
+│   ├── ReportGeneratorPage.js # ✅ Report Generator tool
+│   ├── AdvisorToolsPage.js    # ✅ Financial advisor tools
+│   ├── InstitutionalToolsPage.js # ✅ Institutional tools
 │   └── [other page objects]   # Framework for additional pages
 ├── utils/                     # Utility functions and configuration
-│   ├── selectors.js           # CSS selectors optimized for shadowRoot
+│   ├── selectors.js           # CSS selectors optimized for shadowRoot (✅ Updated)
 │   ├── helpers.js             # Common functions and waiting strategies
-│   └── testData.js            # Test data constants
+│   └── testData.js            # Test data constants (✅ Updated)
 └── debug-scripts/             # Comprehensive debugging methodology
 ```
 
@@ -67,12 +98,24 @@ ishares-regression-testing/
 # Run all fund search scenarios (✅ All passing)
 npm run test:search
 
+# Run complete tools section regression suite (✅ New)
+npm run test:tools
+
+# Run specific tools test suites (✅ New)
+npm run test:tools-navigation
+npm run test:core-builder
+npm run test:comparison-tools
+npm run test:discovery-tools
+npm run test:reporting-tools
+npm run test:advisor-tools
+npm run test:institutional-tools
+
 # Run specific feature files
 npm run test:filtering
 npm run test:comparison
 npm run test:navigation
 
-# Run complete regression suite
+# Run complete regression suite (includes all tools)
 npm test
 ```
 
