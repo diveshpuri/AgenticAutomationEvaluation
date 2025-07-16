@@ -11,9 +11,17 @@ When('I select {string} search type', async function(searchType) {
 });
 
 When('I search for {string}', { timeout: 15000 }, async function(searchTerm) {
-  await this.fundScreenerPage.enterSearchTerm(searchTerm);
-  await this.fundScreenerPage.clickSearchButton();
-  await this.fundScreenerPage.waitForResults();
+  const currentUrl = this.page.url();
+  const isExposureSearch = currentUrl.includes('searchType=exposure') || 
+                          await this.page.locator('input[value="exposure"]:checked').count() > 0;
+  
+  if (isExposureSearch) {
+    await this.fundScreenerPage.performExposureSearch(searchTerm);
+  } else {
+    await this.fundScreenerPage.enterSearchTerm(searchTerm);
+    await this.fundScreenerPage.clickSearchButton();
+    await this.fundScreenerPage.waitForResults();
+  }
 });
 
 Then('I should see search results containing technology-related funds', async function() {

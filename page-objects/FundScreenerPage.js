@@ -63,10 +63,29 @@ class FundScreenerPage {
   }
 
   async enterSearchTerm(term) {
+    try {
+      const exposureInput = this.page.locator('input[placeholder*="company"], input[placeholder*="ticker"], input[placeholder*="geography"], input[placeholder*="sector"]').first();
+      if (await exposureInput.isVisible({ timeout: 2000 })) {
+        await exposureInput.fill(term);
+        return;
+      }
+    } catch (error) {
+    }
+    
     await Helpers.typeWithClear(this.page, Selectors.fundScreener.searchInput, term);
   }
 
   async clickSearchButton() {
+    try {
+      const exposureInput = this.page.locator('input[placeholder*="company"], input[placeholder*="ticker"], input[placeholder*="geography"], input[placeholder*="sector"]').first();
+      if (await exposureInput.isVisible({ timeout: 2000 })) {
+        await exposureInput.press('Enter');
+        await this.page.waitForTimeout(1000);
+        return;
+      }
+    } catch (error) {
+    }
+    
     const searchInput = this.page.locator(Selectors.fundScreener.searchInput).first();
     await searchInput.press('Enter');
     await this.page.waitForTimeout(1000);
@@ -79,6 +98,7 @@ class FundScreenerPage {
     // Wait for URL to change (indicating search was triggered) or timeout
     await Promise.race([
       this.page.waitForURL(/search=/, { timeout: 10000 }),
+      this.page.waitForURL(/sbeCode=/, { timeout: 10000 }),
       this.page.waitForTimeout(8000)
     ]);
     
