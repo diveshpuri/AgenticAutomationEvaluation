@@ -15,7 +15,7 @@ class Selectors {
       searchInput: 'input[placeholder="Enter keyword, ticker, or fund name"]',
       searchButton: 'screener-icon svg',
       keywordRadio: 'mat-radio-button:has-text("KEYWORD")',
-      exposureRadio: 'mat-radio-button:has-text("EXPOSURE")',
+      exposureRadio: 'mat-radio-button:has-text("EXPOSURE"), input[value="exposure"]',
       
       filters: {
         productView: 'screener-filter-dropdown:has-text("PRODUCT VIEW"), ishares-dropdown:has-text("ETFs")',

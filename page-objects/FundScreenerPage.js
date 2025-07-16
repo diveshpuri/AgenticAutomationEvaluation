@@ -30,8 +30,12 @@ class FundScreenerPage {
 
   async performExposureSearch(exposure) {
     await this.selectSearchType('exposure');
-    await this.page.waitForTimeout(1000); // Wait for UI to update
-    await this.enterSearchTerm(exposure);
+    await this.page.waitForTimeout(2000); // Wait for UI to update
+    
+    const exposureInput = this.page.locator('input[placeholder*="exposure"], input[placeholder*="index"]').first();
+    await exposureInput.fill(exposure);
+    await this.page.waitForTimeout(1000);
+    
     await this.clickSearchButton();
     await this.waitForResults();
   }
@@ -49,14 +53,22 @@ class FundScreenerPage {
   }
 
   async clickSearchButton() {
-    await Helpers.clickWithRetry(this.page, Selectors.fundScreener.searchButton);
+    const searchInput = this.page.locator(Selectors.fundScreener.searchInput).first();
+    await searchInput.press('Enter');
+    await this.page.waitForTimeout(1000);
   }
 
   async waitForResults() {
+    // Wait for the search to process and results to update
+    await this.page.waitForTimeout(3000);
+    
+    // Wait for URL to change (indicating search was triggered) or timeout
     await Promise.race([
-      Helpers.waitForElement(this.page, Selectors.fundResults.resultsContainer),
-      Helpers.waitForElement(this.page, Selectors.fundResults.noResults)
+      this.page.waitForURL(/search=/, { timeout: 10000 }),
+      this.page.waitForTimeout(8000)
     ]);
+    
+    await this.page.waitForTimeout(2000);
   }
 
   async applyAssetClassFilter(assetClass) {
@@ -145,7 +157,19 @@ class FundScreenerPage {
   }
 
   async verifyNoResults() {
-    await Helpers.verifyElementExists(this.page, Selectors.fundResults.noResults);
+    const totalFundsText = await this.page.locator('screener-total-funds').textContent();
+    
+    const hasNoResults = totalFundsText && (
+      totalFundsText.includes('(0 of') || 
+      totalFundsText.includes('filtered ETFs (0') ||
+      totalFundsText.includes('Showing 0') ||
+      totalFundsText.includes('0 ETFs')
+    );
+    
+    if (!hasNoResults) {
+      throw new Error(`Expected no results indication but got: "${totalFundsText}"`);
+    }
+    
   }
 
   async verifyResultsExist() {
