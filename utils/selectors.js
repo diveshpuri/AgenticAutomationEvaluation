@@ -63,7 +63,7 @@ class Selectors {
         pageNumber: '.page-number, [data-testid="page-number"]'
       },
       
-      noResults: 'screener-total-funds:has-text("0 ETFs"), screener-funds:has-text("No funds match")',
+      noResults: 'screener-total-funds:has-text("0 ETFs"), screener-total-funds:has-text("No results"), .no-results-message',
       loadingSpinner: '.loading, [data-testid="loading"]'
     };
   }
