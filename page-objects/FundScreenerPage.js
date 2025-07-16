@@ -1,6 +1,7 @@
 const Selectors = require('../utils/selectors');
 const Helpers = require('../utils/helpers');
 const testData = require('../utils/testData');
+const { expect } = require('@playwright/test');
 
 class FundScreenerPage {
   constructor(page) {
@@ -124,10 +125,11 @@ class FundScreenerPage {
     for (const row of fundRows) {
       const fundLink = row.locator(Selectors.fundResults.fundName).first();
       const name = await fundLink.textContent();
-      const ticker = await fundLink.getAttribute('aria-label');
+      const fullText = await fundLink.textContent();
+      const ticker = fullText?.split('\n').pop()?.trim() || '';
       results.push({ 
         name: name?.trim(), 
-        ticker: ticker?.match(/ticker:\s*([A-Z]+)/)?.[1] || ''
+        ticker: ticker
       });
     }
     
