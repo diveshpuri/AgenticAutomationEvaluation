@@ -1,0 +1,50 @@
+name: Daily iShares ETF Scraper
+
+on:
+  schedule:
+    # Run daily at 9:00 AM UTC (after market close)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  scrape-etfs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Install Playwright browsers
+      run: |
+        playwright install chromium
+        
+    - name: Run ETF scraper
+      run: |
+        python ishares_etf_scraper_final.py
+        
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: etf-data-${{ github.run_number }}
+        path: ishares_top_etfs.json
+        retention-days: 30
+        
+    - name: Commit and push results
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add ishares_top_etfs.json
+        git commit -m "chore: update daily ETF data - $(date +'%Y-%m-%d')" || exit 0
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
