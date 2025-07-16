@@ -46,10 +46,8 @@ class Helpers {
   }
 
   static async waitForPageLoad(page, timeout = 30000) {
-    await Promise.all([
-      page.waitForLoadState('networkidle', { timeout }),
-      page.waitForLoadState('domcontentloaded', { timeout })
-    ]);
+    await page.waitForLoadState('domcontentloaded', { timeout });
+    await page.waitForSelector('screener-root', { timeout, state: 'visible' });
   }
 
   static async waitForApiResponse(page, urlPattern, timeout = 15000) {

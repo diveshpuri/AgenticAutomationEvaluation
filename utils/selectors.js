@@ -46,8 +46,8 @@ class Selectors {
     return {
       resultsContainer: 'screener-funds',
       fundRow: 'screener-table tbody tr',
-      fundName: 'screener-fund-cell a div',
-      fundTicker: 'screener-fund-cell a',
+      fundName: 'screener-fund-cell a.link-to-product-page',
+      fundTicker: 'screener-fund-cell a.link-to-product-page',
       expenseRatio: 'td:nth-child(4)',
       netAssets: 'td:nth-child(5)',
       
@@ -63,7 +63,7 @@ class Selectors {
         pageNumber: '.page-number, [data-testid="page-number"]'
       },
       
-      noResults: ':has-text("No results"), [data-testid="no-results"]',
+      noResults: 'screener-total-funds:has-text("0 ETFs"), screener-funds:has-text("No funds match")',
       loadingSpinner: '.loading, [data-testid="loading"]'
     };
   }

@@ -8,7 +8,10 @@ class FundScreenerPage {
   }
 
   async navigate() {
-    await this.page.goto(testData.urls.fundScreener);
+    await this.page.goto(testData.urls.fundScreener, { 
+      waitUntil: 'domcontentloaded',
+      timeout: 60000 
+    });
     await this.waitForPageLoad();
   }
 
@@ -26,6 +29,7 @@ class FundScreenerPage {
 
   async performExposureSearch(exposure) {
     await this.selectSearchType('exposure');
+    await this.page.waitForTimeout(1000); // Wait for UI to update
     await this.enterSearchTerm(exposure);
     await this.clickSearchButton();
     await this.waitForResults();
@@ -118,9 +122,13 @@ class FundScreenerPage {
     const fundRows = await this.page.locator(Selectors.fundResults.fundRow).all();
     
     for (const row of fundRows) {
-      const name = await row.locator(Selectors.fundResults.fundName).textContent();
-      const ticker = await row.locator(Selectors.fundResults.fundTicker).textContent();
-      results.push({ name: name?.trim(), ticker: ticker?.trim() });
+      const fundLink = row.locator(Selectors.fundResults.fundName).first();
+      const name = await fundLink.textContent();
+      const ticker = await fundLink.getAttribute('aria-label');
+      results.push({ 
+        name: name?.trim(), 
+        ticker: ticker?.match(/ticker:\s*([A-Z]+)/)?.[1] || ''
+      });
     }
     
     return results;
