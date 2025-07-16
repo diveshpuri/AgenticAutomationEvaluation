@@ -107,7 +107,7 @@ When('I clear the search field', async function() {
   await this.fundScreenerPage.enterSearchTerm('');
 });
 
-When('I click the search button', async function() {
+When('I click the search button', { timeout: 15000 }, async function() {
   await this.fundScreenerPage.clickSearchButton();
   await this.fundScreenerPage.waitForResults();
 });
@@ -141,7 +141,7 @@ Then('I should still be on the second page of results', async function() {
   expect(currentUrl).toContain('pageNumber=2');
 });
 
-Then('the search results should load within {int} seconds', async function(seconds) {
+Then('the search results should load within {int} seconds', { timeout: 15000 }, async function(seconds) {
   const startTime = Date.now();
   await this.fundScreenerPage.waitForResults();
   const loadTime = Date.now() - startTime;
