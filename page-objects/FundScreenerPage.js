@@ -32,11 +32,25 @@ class FundScreenerPage {
     await this.selectSearchType('exposure');
     await this.page.waitForTimeout(2000); // Wait for UI to update
     
-    const exposureInput = this.page.locator('input[placeholder*="exposure"], input[placeholder*="index"]').first();
+    const exposureInput = this.page.locator('input[placeholder*="company"], input[placeholder*="ticker"], input[placeholder*="geography"], input[placeholder*="sector"]').first();
     await exposureInput.fill(exposure);
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(2000); // Wait for dropdown to appear
     
-    await this.clickSearchButton();
+    try {
+      await this.page.click(`:text("${exposure.toUpperCase()}")`, { timeout: 5000 });
+    } catch (error) {
+      try {
+        await this.page.click(`:text("${exposure}")`, { timeout: 5000 });
+      } catch (error2) {
+        const dropdownOptions = await this.page.locator(`:text("${exposure.toUpperCase()}")`).all();
+        if (dropdownOptions.length > 0) {
+          await dropdownOptions[0].click();
+        } else {
+          throw new Error(`No dropdown options found for exposure term: ${exposure}`);
+        }
+      }
+    }
+    
     await this.waitForResults();
   }
 
