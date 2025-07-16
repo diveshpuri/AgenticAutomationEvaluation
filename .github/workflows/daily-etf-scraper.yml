@@ -28,15 +28,26 @@ jobs:
       run: |
         playwright install chromium
         
+    - name: Run website validation tests
+      run: |
+        python test_ishares_validation.py
+        
     - name: Run ETF scraper
       run: |
         python ishares_etf_scraper_final.py
         
-    - name: Upload results
+    - name: Run integration tests
+      run: |
+        python test_scraper_integration.py
+        
+    - name: Upload results and test reports
       uses: actions/upload-artifact@v4
       with:
-        name: etf-data-${{ github.run_number }}
-        path: ishares_top_etfs.json
+        name: etf-data-and-tests-${{ github.run_number }}
+        path: |
+          ishares_top_etfs.json
+          ishares_validation_results.json
+          scraper_integration_results.json
         retention-days: 30
         
     - name: Commit and push results
