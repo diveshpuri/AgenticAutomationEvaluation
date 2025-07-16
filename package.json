@@ -1,0 +1,35 @@
+{
+  "name": "ishares-regression-testing",
+  "version": "1.0.0",
+  "description": "Comprehensive regression testing framework for iShares website using Playwright and Cucumber",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "test": "node test-runner.js",
+    "test:parallel": "PARALLEL=2 cucumber-js",
+    "test:search": "cucumber-js features/fund-search.feature",
+    "test:filtering": "cucumber-js features/fund-filtering.feature",
+    "test:comparison": "cucumber-js features/fund-comparison.feature",
+    "test:details": "cucumber-js features/fund-details.feature",
+    "test:navigation": "cucumber-js features/navigation.feature",
+    "test:data": "cucumber-js features/data-management.feature",
+    "test:download": "cucumber-js features/download-functionality.feature",
+    "test:headless": "HEADLESS=true cucumber-js",
+    "test:debug": "DEBUG=true cucumber-js",
+    "test:smoke": "cucumber-js --tags @smoke",
+    "test:regression": "cucumber-js --tags 'not @flaky'",
+    "lint": "eslint step-definitions/ page-objects/ utils/",
+    "clean": "rm -rf reports/ screenshots/ downloads/"
+  },
+  "keywords": ["playwright", "cucumber", "regression", "testing", "ishares", "etf"],
+  "author": "Devin AI",
+  "license": "MIT",
+  "dependencies": {
+    "@cucumber/cucumber": "^10.3.1",
+    "@playwright/test": "^1.40.0",
+    "playwright": "^1.40.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0"
+  }
+}

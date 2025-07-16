@@ -1,0 +1,190 @@
+const Selectors = require('../utils/selectors');
+const Helpers = require('../utils/helpers');
+const testData = require('../utils/testData');
+
+class FundScreenerPage {
+  constructor(page) {
+    this.page = page;
+  }
+
+  async navigate() {
+    await this.page.goto(testData.urls.fundScreener);
+    await this.waitForPageLoad();
+  }
+
+  async waitForPageLoad() {
+    await Helpers.waitForPageLoad(this.page);
+    await Helpers.waitForElement(this.page, Selectors.fundScreener.container);
+  }
+
+  async performKeywordSearch(keyword) {
+    await this.selectSearchType('keyword');
+    await this.enterSearchTerm(keyword);
+    await this.clickSearchButton();
+    await this.waitForResults();
+  }
+
+  async performExposureSearch(exposure) {
+    await this.selectSearchType('exposure');
+    await this.enterSearchTerm(exposure);
+    await this.clickSearchButton();
+    await this.waitForResults();
+  }
+
+  async selectSearchType(type) {
+    const radioSelector = type === 'keyword' 
+      ? Selectors.fundScreener.keywordRadio 
+      : Selectors.fundScreener.exposureRadio;
+    
+    await Helpers.clickWithRetry(this.page, radioSelector);
+  }
+
+  async enterSearchTerm(term) {
+    await Helpers.typeWithClear(this.page, Selectors.fundScreener.searchInput, term);
+  }
+
+  async clickSearchButton() {
+    await Helpers.clickWithRetry(this.page, Selectors.fundScreener.searchButton);
+  }
+
+  async waitForResults() {
+    await Promise.race([
+      Helpers.waitForElement(this.page, Selectors.fundResults.resultsContainer),
+      Helpers.waitForElement(this.page, Selectors.fundResults.noResults)
+    ]);
+  }
+
+  async applyAssetClassFilter(assetClass) {
+    const filterSelector = await Helpers.handleShadowRoot(
+      this.page,
+      'screener-filter-dropdown:has-text("ASSET CLASS")',
+      'ishares-dropdown button'
+    );
+    
+    await Helpers.clickWithRetry(this.page, filterSelector);
+    await this.page.click(`text="${assetClass}"`);
+    await this.waitForResults();
+  }
+
+  async applyMarketsRegionsFilter(region) {
+    const filterSelector = await Helpers.handleShadowRoot(
+      this.page,
+      'screener-filter-dropdown:has-text("MARKETS & REGIONS")',
+      'ishares-dropdown button'
+    );
+    
+    await Helpers.clickWithRetry(this.page, filterSelector);
+    await this.page.click(`text="${region}"`);
+    await this.waitForResults();
+  }
+
+  async applyProductRangeFilter(range) {
+    const filterSelector = await Helpers.handleShadowRoot(
+      this.page,
+      'screener-filter-dropdown:has-text("PRODUCT RANGE")',
+      'ishares-dropdown button'
+    );
+    
+    await Helpers.clickWithRetry(this.page, filterSelector);
+    await this.page.click(`text="${range}"`);
+    await this.waitForResults();
+  }
+
+  async resetAllFilters() {
+    await Helpers.clickWithRetry(this.page, Selectors.fundScreener.resetFilters);
+    await this.waitForResults();
+  }
+
+  async sortBy(sortOption) {
+    const sortSelector = await Helpers.handleShadowRoot(
+      this.page,
+      'screener-sort-dropdown',
+      'select, button'
+    );
+    
+    await Helpers.clickWithRetry(this.page, sortSelector);
+    await this.page.click(`text="${sortOption}"`);
+    await this.waitForResults();
+  }
+
+  async switchDataView(view) {
+    const viewSelector = Selectors.fundScreener.dataView[view];
+    await Helpers.clickWithRetry(this.page, viewSelector);
+    await this.waitForResults();
+  }
+
+  async getSearchResults() {
+    const results = [];
+    const fundRows = await this.page.locator(Selectors.fundResults.fundRow).all();
+    
+    for (const row of fundRows) {
+      const name = await row.locator(Selectors.fundResults.fundName).textContent();
+      const ticker = await row.locator(Selectors.fundResults.fundTicker).textContent();
+      results.push({ name: name?.trim(), ticker: ticker?.trim() });
+    }
+    
+    return results;
+  }
+
+  async getResultsCount() {
+    return await this.page.locator(Selectors.fundResults.fundRow).count();
+  }
+
+  async verifyNoResults() {
+    await Helpers.verifyElementExists(this.page, Selectors.fundResults.noResults);
+  }
+
+  async verifyResultsExist() {
+    const count = await this.getResultsCount();
+    expect(count).toBeGreaterThan(0);
+  }
+
+  async addFundToComparison(fundIndex = 0) {
+    const checkboxes = await this.page.locator(Selectors.fundResults.comparison.addToCompare).all();
+    if (checkboxes[fundIndex]) {
+      await checkboxes[fundIndex].check();
+    }
+  }
+
+  async clickCompareButton() {
+    await Helpers.clickWithRetry(this.page, Selectors.fundResults.comparison.compareButton);
+  }
+
+  async goToNextPage() {
+    await Helpers.clickWithRetry(this.page, Selectors.fundResults.pagination.nextPage);
+    await this.waitForResults();
+  }
+
+  async goToPreviousPage() {
+    await Helpers.clickWithRetry(this.page, Selectors.fundResults.pagination.prevPage);
+    await this.waitForResults();
+  }
+
+  async getCurrentPageNumber() {
+    return await Helpers.getElementText(this.page, Selectors.fundResults.pagination.pageNumber);
+  }
+
+  async clickDownloadButton() {
+    await Helpers.clickWithRetry(this.page, Selectors.fundScreener.downloadButton);
+  }
+
+  async clickFundName(fundIndex = 0) {
+    const fundNames = await this.page.locator(Selectors.fundResults.fundName).all();
+    if (fundNames[fundIndex]) {
+      await fundNames[fundIndex].click();
+      await Helpers.waitForPageLoad(this.page);
+    }
+  }
+
+  async verifyFilterApplied(filterType, filterValue) {
+    const activeFilter = `[data-filter="${filterType}"][data-value="${filterValue}"]`;
+    await Helpers.verifyElementExists(this.page, activeFilter);
+  }
+
+  async verifySortApplied(sortOption) {
+    const activeSortIndicator = `[data-sort="${sortOption}"][aria-sort="ascending"], [data-sort="${sortOption}"][aria-sort="descending"]`;
+    await Helpers.verifyElementExists(this.page, activeSortIndicator);
+  }
+}
+
+module.exports = FundScreenerPage;
