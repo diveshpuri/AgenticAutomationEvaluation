@@ -86,9 +86,24 @@ class FundScreenerPage {
     } catch (error) {
     }
     
-    const searchInput = this.page.locator(Selectors.fundScreener.searchInput).first();
-    await searchInput.press('Enter');
-    await this.page.waitForTimeout(1000);
+    try {
+      const searchInput = this.page.locator(Selectors.fundScreener.searchInput).first();
+      if (await searchInput.isVisible({ timeout: 2000 })) {
+        await searchInput.press('Enter');
+        await this.page.waitForTimeout(1000);
+        return;
+      }
+    } catch (error) {
+    }
+    
+    const allInputs = await this.page.locator('input[type="text"], input[type="search"]').all();
+    for (const input of allInputs) {
+      if (await input.isVisible()) {
+        await input.press('Enter');
+        await this.page.waitForTimeout(1000);
+        break;
+      }
+    }
   }
 
   async waitForResults() {
@@ -223,17 +238,33 @@ class FundScreenerPage {
   }
 
   async goToNextPage() {
-    await Helpers.clickWithRetry(this.page, Selectors.fundResults.pagination.nextPage);
+    const currentUrl = this.page.url();
+    const urlObj = new URL(currentUrl);
+    const currentPage = parseInt(urlObj.hash.match(/pageNumber=(\d+)/)?.[1] || '1');
+    const nextPage = currentPage + 1;
+    
+    const newUrl = currentUrl.replace(/pageNumber=\d+/, `pageNumber=${nextPage}`);
+    await this.page.goto(newUrl);
     await this.waitForResults();
   }
 
   async goToPreviousPage() {
-    await Helpers.clickWithRetry(this.page, Selectors.fundResults.pagination.prevPage);
-    await this.waitForResults();
+    const currentUrl = this.page.url();
+    const urlObj = new URL(currentUrl);
+    const currentPage = parseInt(urlObj.hash.match(/pageNumber=(\d+)/)?.[1] || '1');
+    
+    if (currentPage > 1) {
+      const prevPage = currentPage - 1;
+      const newUrl = currentUrl.replace(/pageNumber=\d+/, `pageNumber=${prevPage}`);
+      await this.page.goto(newUrl);
+      await this.waitForResults();
+    }
   }
 
   async getCurrentPageNumber() {
-    return await Helpers.getElementText(this.page, Selectors.fundResults.pagination.pageNumber);
+    const currentUrl = this.page.url();
+    const pageNumber = currentUrl.match(/pageNumber=(\d+)/)?.[1] || '1';
+    return pageNumber;
   }
 
   async clickDownloadButton() {
