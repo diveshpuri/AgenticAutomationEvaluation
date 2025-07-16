@@ -38,7 +38,7 @@ When('I click on the search icon in the header', async function() {
   await this.homePage.openSearch();
 });
 
-When('I search for {string}', async function(searchTerm) {
+When('I perform global search for {string}', async function(searchTerm) {
   await this.homePage.performGlobalSearch(searchTerm);
 });
 

@@ -19,7 +19,7 @@ class CustomWorld {
 
   async init() {
     this.browser = await chromium.launch({
-      headless: this.parameters.headless !== false,
+      headless: true,
       slowMo: this.parameters.debug ? 100 : 0
     });
     

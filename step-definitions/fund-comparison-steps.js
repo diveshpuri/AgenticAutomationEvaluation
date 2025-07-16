@@ -152,7 +152,7 @@ Then('the file should contain the compared fund data', async function() {
   expect(filename).toContain('comparison');
 });
 
-When('I refresh the page', async function() {
+When('I reload the current page', async function() {
   await this.page.reload();
   await this.fundScreenerPage.waitForPageLoad();
 });

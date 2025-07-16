@@ -193,7 +193,7 @@ Given('I am viewing fund results', async function() {
   await this.fundScreenerPage.waitForResults();
 });
 
-When('I refresh the page', async function() {
+When('I reload the page', async function() {
   await this.page.reload();
   await this.fundScreenerPage.waitForPageLoad();
 });
