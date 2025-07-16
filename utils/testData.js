@@ -55,7 +55,7 @@ const testData = {
 
   urls: {
     base: 'https://www.ishares.com/us',
-    fundScreener: 'https://www.ishares.com/us/products/etf-investments',
+    fundScreener: 'https://www.ishares.com/us/products/etf-investments#/?productView=etf&pageNumber=1&sortColumn=totalNetAssets&sortDirection=desc&dataView=keyFacts',
     comparison: 'https://www.ishares.com/us/products/fund-comparison'
   },
 

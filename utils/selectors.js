@@ -11,11 +11,11 @@ class Selectors {
 
   static get fundScreener() {
     return {
-      container: 'screener-container, [data-testid="screener-container"]',
-      searchInput: 'input[placeholder*="keyword"], input[placeholder*="ticker"], input[name="search"]',
-      searchButton: 'button[type="submit"], button:has-text("Search")',
-      keywordRadio: 'input[type="radio"][value="keyword"], input[name="searchType"][value="keyword"]',
-      exposureRadio: 'input[type="radio"][value="exposure"], input[name="searchType"][value="exposure"]',
+      container: 'screener-root',
+      searchInput: 'input[placeholder="Enter keyword, ticker, or fund name"]',
+      searchButton: 'screener-icon svg',
+      keywordRadio: 'mat-radio-button:has-text("KEYWORD")',
+      exposureRadio: 'mat-radio-button:has-text("EXPOSURE")',
       
       filters: {
         productView: 'screener-filter-dropdown:has-text("PRODUCT VIEW"), ishares-dropdown:has-text("ETFs")',
@@ -44,12 +44,12 @@ class Selectors {
 
   static get fundResults() {
     return {
-      resultsContainer: 'screener-results, [data-testid="results-container"]',
-      fundRow: 'tr[data-testid="fund-row"], .fund-row, tbody tr',
-      fundName: 'td:has-text("ETF"), .fund-name, [data-column="name"]',
-      fundTicker: '.ticker, [data-column="ticker"]',
-      expenseRatio: '[data-column="expenseRatio"], td:nth-child(4)',
-      netAssets: '[data-column="netAssets"], td:nth-child(5)',
+      resultsContainer: 'screener-funds',
+      fundRow: 'screener-table tbody tr',
+      fundName: 'screener-fund-cell a div',
+      fundTicker: 'screener-fund-cell a',
+      expenseRatio: 'td:nth-child(4)',
+      netAssets: 'td:nth-child(5)',
       
       comparison: {
         addToCompare: 'input[type="checkbox"][data-testid="compare"], .compare-checkbox',
