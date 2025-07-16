@@ -124,12 +124,16 @@ class FundScreenerPage {
     
     for (const row of fundRows) {
       const fundLink = row.locator(Selectors.fundResults.fundName).first();
-      const name = await fundLink.textContent();
-      const fullText = await fundLink.textContent();
-      const ticker = fullText?.split('\n').pop()?.trim() || '';
+      
+      const nameElement = fundLink.locator('.fund-name, .column-fundName');
+      const name = await nameElement.textContent();
+      
+      const tickerElement = fundLink.locator('.ticker, .column-localExchangeTicker');
+      const ticker = await tickerElement.textContent();
+      
       results.push({ 
-        name: name?.trim(), 
-        ticker: ticker
+        name: name?.trim() || '', 
+        ticker: ticker?.trim() || ''
       });
     }
     
