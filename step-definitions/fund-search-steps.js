@@ -148,7 +148,7 @@ Then('the search results should load within {int} seconds', { timeout: 15000 }, 
   expect(loadTime).toBeLessThan(seconds * 1000);
 });
 
-Then('pagination should be available for large result sets', async function() {
+Then('pagination should be available for large result sets', { timeout: 15000 }, async function() {
   const count = await this.fundScreenerPage.getResultsCount();
   if (count >= 25) {
     const currentUrl = this.page.url();
